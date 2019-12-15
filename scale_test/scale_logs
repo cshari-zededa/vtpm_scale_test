@@ -1,0 +1,340 @@
+/ # sh scale_test 
+10000, 0
+20000, 0
+30000, 0
+40000, 0
+50000, 0
+60000, 0
+ 70000, 0
+80000, 0
+90000, 0
+100000, 0
+110000, 0
+120000, 0
+130000, 0
+140000, 0
+150000, 0
+160000, 0
+170000, 0
+180000, 0
+190000, 0
+200000, 0
+210000, 0
+220000, 0
+230000, 0
+240000, 0
+250000, 0
+260000, 0
+270000, 0
+280000, 0
+290000, 0
+300000, 0
+310000, 0
+320000, 0
+330000, 0
+340000, 0
+350000, 0
+360000, 0
+370000, 0
+380000, 0
+390000, 0
+400000, 0
+410000, 0
+420000, 0
+430000, 0
+440000, 0
+450000, 0
+460000, 0
+470000, 0
+480000, 0
+490000, 0
+500000, 0
+510000, 0
+520000, 0
+530000, 0
+540000, 0
+550000, 0
+560000, 0
+570000, 0
+580000, 0
+590000, 0
+600000, 0
+610000, 0
+620000, 0
+630000, 0
+640000, 0
+650000, 0
+660000, 0
+670000, 0
+680000, 0
+690000, 0
+700000, 0
+710000, 0
+720000, 0
+730000, 0
+740000, 0
+750000, 0
+760000, 0
+770000, 0
+780000, 0
+790000, 0
+800000, 0
+810000, 0
+820000, 0
+830000, 0
+840000, 0
+850000, 0
+860000, 0
+870000, 0
+880000, 0
+890000, 0
+900000, 0
+910000, 0
+920000, 0
+930000, 0
+940000, 0
+950000, 0
+960000, 0
+970000, 0
+980000, 0
+990000, 0
+1000000, 0
+/ #  
+/ # 
+/ # 
+/ # 
+/ # 
+/ # 
+/ # cat /proc/7/status > after2
+/ # 
+/ # 
+/ # diff before after2
+--- before
++++ after2
+@@ -14,14 +14,14 @@
+ NSpid:	7
+ NSpgid:	7
+ NSsid:	1
+-VmPeak:	   13116 kB
++VmPeak:	   13208 kB
+ VmSize:	   13024 kB
+ VmLck:	       0 kB
+ VmPin:	       0 kB
+-VmHWM:	    2620 kB
+-VmRSS:	    2616 kB
+-RssAnon:	     188 kB
+-RssFile:	    2428 kB
++VmHWM:	    3856 kB
++VmRSS:	    1372 kB
++RssAnon:	     216 kB
++RssFile:	    1156 kB
+ RssShmem:	       0 kB
+ VmData:	     176 kB
+ VmStk:	     132 kB
+@@ -49,5 +49,5 @@
+ Cpus_allowed_list:	0-3
+ Mems_allowed:	1
+ Mems_allowed_list:	0
+-voluntary_ctxt_switches:	2
+-nonvoluntary_ctxt_switches:	1
++voluntary_ctxt_switches:	1011342
++nonvoluntary_ctxt_switches:	21078
+/ # htop
+/ # 
+/ # 
+/ # 
+/ # eve_run move -i a -o b
+
+/ # 
+/ # 
+/ # netstat -an
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       
+tcp        0      0 0.0.0.0:8877            0.0.0.0:*               LISTEN      
+tcp        0      0 172.17.0.2:59294        172.17.0.2:8877         TIME_WAIT   
+Active UNIX domain sockets (servers and established)
+Proto RefCnt Flags       Type       State         I-Node Path
+/ # cat scale_test 
+#/bin/sh
+
+i=0
+while [ $i -lt 1000000 ]
+do
+        eve_run move -i a -o b > /dev/null
+	i=$((i+1))
+	result=`expr $i % 10000`
+	if [ $result -eq 0 ]; then
+           echo $i, $result
+        fi
+done
+/ # 
+/ # 
+/ # diff before after2^C
+/ # cat befoer
+cat: can't open 'befoer': No such file or directory
+/ # cat before
+Name:	vtpm_server
+Umask:	0022
+State:	S (sleeping)
+Tgid:	7
+Ngid:	0
+Pid:	7
+PPid:	1
+TracerPid:	0
+Uid:	0	0	0	0
+Gid:	0	0	0	0
+FDSize:	64
+Groups:	0 1 2 3 4 6 10 11 20 26 27 
+NStgid:	7
+NSpid:	7
+NSpgid:	7
+NSsid:	1
+VmPeak:	   13116 kB
+VmSize:	   13024 kB
+VmLck:	       0 kB
+VmPin:	       0 kB
+VmHWM:	    2620 kB
+VmRSS:	    2616 kB
+RssAnon:	     188 kB
+RssFile:	    2428 kB
+RssShmem:	       0 kB
+VmData:	     176 kB
+VmStk:	     132 kB
+VmExe:	     108 kB
+VmLib:	   12464 kB
+VmPTE:	      48 kB
+VmPMD:	      12 kB
+VmSwap:	       0 kB
+HugetlbPages:	       0 kB
+Threads:	1
+SigQ:	0/7866
+SigPnd:	0000000000000000
+ShdPnd:	0000000000000000
+SigBlk:	0000000000000000
+SigIgn:	0000000000000000
+SigCgt:	0000000000000000
+CapInh:	00000000a80425fb
+CapPrm:	00000000a80425fb
+CapEff:	00000000a80425fb
+CapBnd:	00000000a80425fb
+CapAmb:	0000000000000000
+Seccomp:	2
+Speculation_Store_Bypass:	vulnerable
+Cpus_allowed:	f
+Cpus_allowed_list:	0-3
+Mems_allowed:	1
+Mems_allowed_list:	0
+voluntary_ctxt_switches:	2
+nonvoluntary_ctxt_switches:	1
+/ # cat after
+Name:	vtpm_server
+Umask:	0022
+State:	S (sleeping)
+Tgid:	7
+Ngid:	0
+Pid:	7
+PPid:	1
+TracerPid:	0
+Uid:	0	0	0	0
+Gid:	0	0	0	0
+FDSize:	64
+Groups:	0 1 2 3 4 6 10 11 20 26 27 
+NStgid:	7
+NSpid:	7
+NSpgid:	7
+NSsid:	1
+VmPeak:	   13116 kB
+VmSize:	   13024 kB
+VmLck:	       0 kB
+VmPin:	       0 kB
+VmHWM:	    3856 kB
+VmRSS:	    3832 kB
+RssAnon:	     236 kB
+RssFile:	    3596 kB
+RssShmem:	       0 kB
+VmData:	     176 kB
+VmStk:	     132 kB
+VmExe:	     108 kB
+VmLib:	   12464 kB
+VmPTE:	      48 kB
+VmPMD:	      12 kB
+VmSwap:	       0 kB
+HugetlbPages:	       0 kB
+Threads:	1
+SigQ:	0/7866
+SigPnd:	0000000000000000
+ShdPnd:	0000000000000000
+SigBlk:	0000000000000000
+SigIgn:	0000000000000000
+SigCgt:	0000000000000000
+CapInh:	00000000a80425fb
+CapPrm:	00000000a80425fb
+CapEff:	00000000a80425fb
+CapBnd:	00000000a80425fb
+CapAmb:	0000000000000000
+Seccomp:	2
+Speculation_Store_Bypass:	vulnerable
+Cpus_allowed:	f
+Cpus_allowed_list:	0-3
+Mems_allowed:	1
+Mems_allowed_list:	0
+voluntary_ctxt_switches:	11341
+nonvoluntary_ctxt_switches:	304
+
+
+/ # cat after2
+Name:	vtpm_server
+Umask:	0022
+State:	S (sleeping)
+Tgid:	7
+Ngid:	0
+Pid:	7
+PPid:	1
+TracerPid:	0
+Uid:	0	0	0	0
+Gid:	0	0	0	0
+FDSize:	64
+Groups:	0 1 2 3 4 6 10 11 20 26 27 
+NStgid:	7
+NSpid:	7
+NSpgid:	7
+NSsid:	1
+VmPeak:	   13208 kB
+VmSize:	   13024 kB
+VmLck:	       0 kB
+VmPin:	       0 kB
+VmHWM:	    3856 kB
+VmRSS:	    1372 kB
+RssAnon:	     216 kB
+RssFile:	    1156 kB
+RssShmem:	       0 kB
+VmData:	     176 kB
+VmStk:	     132 kB
+VmExe:	     108 kB
+VmLib:	   12464 kB
+VmPTE:	      48 kB
+VmPMD:	      12 kB
+VmSwap:	       0 kB
+HugetlbPages:	       0 kB
+Threads:	1
+SigQ:	0/7866
+SigPnd:	0000000000000000
+ShdPnd:	0000000000000000
+SigBlk:	0000000000000000
+SigIgn:	0000000000000000
+SigCgt:	0000000000000000
+CapInh:	00000000a80425fb
+CapPrm:	00000000a80425fb
+CapEff:	00000000a80425fb
+CapBnd:	00000000a80425fb
+CapAmb:	0000000000000000
+Seccomp:	2
+Speculation_Store_Bypass:	vulnerable
+Cpus_allowed:	f
+Cpus_allowed_list:	0-3
+Mems_allowed:	1
+Mems_allowed_list:	0
+voluntary_ctxt_switches:	1011342
+nonvoluntary_ctxt_switches:	21078
+/ # 
+
