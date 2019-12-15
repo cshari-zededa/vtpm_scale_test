@@ -1,3 +1,16 @@
+/ # cat scale_test 
+#/bin/sh
+
+i=0
+while [ $i -lt 1000000 ]
+do
+        eve_run move -i a -o b > /dev/null
+	i=$((i+1))
+	result=`expr $i % 10000`
+	if [ $result -eq 0 ]; then
+           echo $i, $result
+        fi
+done
 / # sh scale_test 
 10000, 0
 20000, 0
@@ -105,10 +118,10 @@
 / # 
 / # 
 / # 
-/ # cat /proc/7/status > after2
+/ # cat /proc/7/status > after
 / # 
 / # 
-/ # diff before after2
+/ # diff before after
 --- before
 +++ after2
 @@ -14,14 +14,14 @@
@@ -154,25 +167,8 @@ tcp        0      0 0.0.0.0:8877            0.0.0.0:*               LISTEN
 tcp        0      0 172.17.0.2:59294        172.17.0.2:8877         TIME_WAIT   
 Active UNIX domain sockets (servers and established)
 Proto RefCnt Flags       Type       State         I-Node Path
-/ # cat scale_test 
-#/bin/sh
-
-i=0
-while [ $i -lt 1000000 ]
-do
-        eve_run move -i a -o b > /dev/null
-	i=$((i+1))
-	result=`expr $i % 10000`
-	if [ $result -eq 0 ]; then
-           echo $i, $result
-        fi
-done
 / # 
-/ # 
-/ # diff before after2^C
-/ # cat befoer
-cat: can't open 'befoer': No such file or directory
-/ # cat before
+ # cat before
 Name:	vtpm_server
 Umask:	0022
 State:	S (sleeping)
@@ -243,62 +239,6 @@ NStgid:	7
 NSpid:	7
 NSpgid:	7
 NSsid:	1
-VmPeak:	   13116 kB
-VmSize:	   13024 kB
-VmLck:	       0 kB
-VmPin:	       0 kB
-VmHWM:	    3856 kB
-VmRSS:	    3832 kB
-RssAnon:	     236 kB
-RssFile:	    3596 kB
-RssShmem:	       0 kB
-VmData:	     176 kB
-VmStk:	     132 kB
-VmExe:	     108 kB
-VmLib:	   12464 kB
-VmPTE:	      48 kB
-VmPMD:	      12 kB
-VmSwap:	       0 kB
-HugetlbPages:	       0 kB
-Threads:	1
-SigQ:	0/7866
-SigPnd:	0000000000000000
-ShdPnd:	0000000000000000
-SigBlk:	0000000000000000
-SigIgn:	0000000000000000
-SigCgt:	0000000000000000
-CapInh:	00000000a80425fb
-CapPrm:	00000000a80425fb
-CapEff:	00000000a80425fb
-CapBnd:	00000000a80425fb
-CapAmb:	0000000000000000
-Seccomp:	2
-Speculation_Store_Bypass:	vulnerable
-Cpus_allowed:	f
-Cpus_allowed_list:	0-3
-Mems_allowed:	1
-Mems_allowed_list:	0
-voluntary_ctxt_switches:	11341
-nonvoluntary_ctxt_switches:	304
-
-
-/ # cat after2
-Name:	vtpm_server
-Umask:	0022
-State:	S (sleeping)
-Tgid:	7
-Ngid:	0
-Pid:	7
-PPid:	1
-TracerPid:	0
-Uid:	0	0	0	0
-Gid:	0	0	0	0
-FDSize:	64
-Groups:	0 1 2 3 4 6 10 11 20 26 27 
-NStgid:	7
-NSpid:	7
-NSpgid:	7
-NSsid:	1
 VmPeak:	   13208 kB
 VmSize:	   13024 kB
 VmLck:	       0 kB
@@ -338,3 +278,23 @@ voluntary_ctxt_switches:	1011342
 nonvoluntary_ctxt_switches:	21078
 / # 
 
+/ # cat top_output 
+
+top - 15:39:48 up 1 day, 14:05,  0 users,  load average: 0.00, 0.01, 0.21
+Threads:   3 total,   1 running,   2 sleeping,   0 stopped,   0 zombie
+%Cpu0  :   0.0/0.0     0[                                                                                                    ]
+%Cpu1  :   0.0/0.0     0[                                                                                                    ]
+%Cpu2  :   0.0/0.0     0[                                                                                                    ]
+%Cpu3  :   0.0/0.0     0[                                                                                                    ]
+GiB Mem : 23.5/2.0      [                                                                                                    ]
+GiB Swap:  4.0/1.0      [                                                                                                    ]
+
+  PID USER      PR  NI    VIRT    RES  %CPU  %MEM     TIME+ S COMMAND                                                                                                       
+    1 root      20   0    1.6m   0.9m   0.0   0.0   0:00.31 S /bin/sh                                                                                                       
+    7 root      20   0   12.7m   1.3m   0.0   0.1   1:41.76 S  `- ./vtpm_server                                                                                             
+ 6079 root      20   0    7.9m   1.2m   0.0   0.1   0:00.00 R  `- top -H -n 1                                                       
+
+/ # ps -T -p 7
+  PID  SPID TTY          TIME CMD
+    7     7 pts/0    00:01:41 vtpm_server
+/ # 
